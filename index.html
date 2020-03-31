@@ -1,0 +1,177 @@
+<html>
+<head>
+  <link href='styles.css' rel='stylesheet'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+  <div id="animation">
+    <div id="projectile">
+
+    </div>
+    <div id="data">
+      <div id="time">
+
+      </div>
+      <div id="horizontalDisplacement">
+
+      </div>
+      <div id="verticalDisplacement">
+
+      </div>
+    </div>
+  </div>
+  <canvas id="s_s_graph"></canvas>
+</body>
+<script>
+  // Projectile (cannon)
+  var u = 20
+  var theta = 25
+  var g = -9.81
+  var v_x
+  var v_y
+  var a
+  var t_end
+  var s_x
+  var s_y
+
+
+  // Graphs
+  var data_s_s = [] // Displacement-displacement graph
+
+
+  // Convert degrees to radians
+  theta = (theta/360) * 2*Math.PI
+
+  // Determine components of u
+  var sin_theta = Math.sin(theta)
+  var cos_theta = Math.cos(theta)
+  var u_x = u*cos_theta
+  var u_y = u*sin_theta
+
+  // Iterate to find v_x, v_y, s_x and s_y at time t
+  var t = 0
+  var t_increment = 0.001
+  a = g
+  do {
+    // Find v_y
+    v_y = u_y + a*t
+
+    // Find v_x (constant)
+    v_x = u_x
+
+    // Find s_y: s = (v^2 - u^2)/2a
+    s_y = (v_y**2 - u_y**2)/(2*a)
+
+    // Find s_x
+    s_x = u_x * t
+
+    // Build data sets for graphing
+    data_s_s.push({x: s_x, y: s_y})
+
+
+
+    //console.log({t}, {v_x}, {v_y}, {s_x}, {s_y})
+    t = t + t_increment
+  }
+  while (s_y >= 0)
+
+  // Determine t_end (vertical)
+  // v = u + at
+  // t = (v-u)/a
+  var v_y = -1*u_y
+  var a = g
+  var t_max = (v_y-u_y)/a
+
+  console.log({t_max})
+
+  // Determine maximum height
+  // v^2 = u^2 + 2as, where v = 0
+  // s = (v^2 - u^2)/2a
+  v_y = 0
+  var s_y_max = (v_y**2 - u_y**2)/(2*a)
+
+  console.log({s_y_max})
+
+
+  // Find range (s) horizontal
+  var s_x_max = u_x * t_max
+
+
+  // Find velocity on impact
+
+  console.log({s_x_max})
+
+  console.log(data_s_s)
+
+  var s_s_graph = document.getElementById('s_s_graph').getContext('2d');
+  var s_s = new Chart(s_s_graph, {
+    type: 'line',
+    data: {
+      datasets: [{
+          label: 'Displacement-displacement',
+          data: data_s_s
+      }]
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom',
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Horizontal displacement / m'
+                }
+            }],
+            yAxes: [{
+                type: 'linear',
+                position: 'left',
+                min: 0,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Vertical displacement / m'
+                },
+                ticks: {
+                  min: 0
+                }
+            }]
+        }
+      }
+  });
+
+$(document).ready(function(){
+  animation()
+})
+
+// Animation
+function animation() {
+  var elem = document.getElementById("projectile");
+  var x = 0;
+  var y = 0;
+  var i = 0;
+  var id = setInterval(frame, t_increment/1000);
+
+  var animationHeight = $('#animation').height()
+  var animationWidth = $('#animation').width()
+
+  var heightFactor = animationHeight / s_y_max
+  var widthFactor = animationWidth / s_x_max
+
+  console.log(heightFactor)
+
+  function frame() {
+    if (i >= data_s_s.length) {
+      clearInterval(id);
+    } else {
+      elem.style.top = animationHeight - (data_s_s[i].y * heightFactor) + 'px';
+      elem.style.left = (data_s_s[i].x * widthFactor) + 'px';
+
+      $('#time').html("Time: " + i/1000 + "s")
+      $('#horizontalDisplacement').html("Horizontal displacement: " + data_s_s[i].x + "m")
+      $('#verticalDisplacement').html("Vertical displacement: " + data_s_s[i].y + "m")
+      i++;
+    }
+  }
+}
+</script>
+</html>
