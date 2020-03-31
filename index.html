@@ -248,13 +248,13 @@ function animate() {
       context.fillStyle = 'green';
       context.fillText(data[i].v_y.toFixed(2)+' m/s', centerX + 10, centerY - data[i].v_y * v_factor);
 
-      $('#time').html("Time: " + i/1000 + "s")
-      $('#horizontalDisplacement').html("Horizontal displacement: " + data[i].s_x + " m")
-      $('#verticalDisplacement').html("Vertical displacement: " + data[i].s_y + " m")
-      $('#horizontalVelocity').html("Horizontal velocity: " + data[i].v_x + " m/s")
-      $('#verticalVelocity').html("Vertical velocity: " + data[i].v_y + " m/s")
-      $('#resultantVelocity').html("Resultant velocity: " + data[i].v + " m/s")
-      $('#angle').html("Angle from horizontal: " + data[i].angle + " degrees")
+      $('#time').html("Time: " + data[i].t.toFixed(2) + " s")
+      $('#horizontalDisplacement').html("Horizontal displacement: " + data[i].s_x.toFixed(2) + " m")
+      $('#verticalDisplacement').html("Vertical displacement: " + data[i].s_y.toFixed(2) + " m")
+      $('#horizontalVelocity').html("Horizontal velocity: " + data[i].v_x.toFixed(2) + " m/s")
+      $('#verticalVelocity').html("Vertical velocity: " + data[i].v_y.toFixed(2) + " m/s")
+      $('#resultantVelocity').html("Resultant velocity: " + data[i].v.toFixed(2) + " m/s")
+      $('#angle').html("Angle from horizontal: " + data[i].angle.toFixed(2) + " degrees")
 
       i++;
     }
