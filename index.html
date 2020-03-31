@@ -11,13 +11,18 @@
     </div>
     <div id="data">
       <div id="time">
-
       </div>
       <div id="horizontalDisplacement">
-
       </div>
       <div id="verticalDisplacement">
-
+      </div>
+      <div id="horizontalVelocity">
+      </div>
+      <div id="verticalVelocity">
+      </div>
+      <div id="resultantVelocity">
+      </div>
+      <div id="angle">
       </div>
     </div>
   </div>
@@ -26,19 +31,20 @@
 <script>
   // Projectile (cannon)
   var u = 20
-  var theta = 25
+  var theta = 45
   var g = -9.81
   var v_x
   var v_y
+  var v
   var a
   var t_end
   var s_x
   var s_y
-
+  var angle
 
   // Graphs
   var data_s_s = [] // Displacement-displacement graph
-
+  var data = []
 
   // Convert degrees to radians
   theta = (theta/360) * 2*Math.PI
@@ -60,6 +66,12 @@
     // Find v_x (constant)
     v_x = u_x
 
+    // Find resultant v
+    v = Math.sqrt(v_x**2 + v_y**2)
+
+    // Find angle
+    angle = Math.atan(v_y / v_x) * (360 / (2*Math.PI))
+
     // Find s_y: s = (v^2 - u^2)/2a
     s_y = (v_y**2 - u_y**2)/(2*a)
 
@@ -68,6 +80,9 @@
 
     // Build data sets for graphing
     data_s_s.push({x: s_x, y: s_y})
+
+    // Build full data set for animations
+    data.push({s_x: s_x, s_y: s_y, v_x: v_x, v_y: v_y, t: t, v: v, angle: angle})
 
 
 
@@ -160,15 +175,20 @@ function animation() {
   console.log(heightFactor)
 
   function frame() {
-    if (i >= data_s_s.length) {
+    if (i >= data.length) {
       clearInterval(id);
     } else {
-      elem.style.top = animationHeight - (data_s_s[i].y * heightFactor) + 'px';
-      elem.style.left = (data_s_s[i].x * widthFactor) + 'px';
+      elem.style.top = animationHeight - (data[i].s_y * heightFactor) + 'px';
+      elem.style.left = (data[i].s_x * widthFactor) + 'px';
 
       $('#time').html("Time: " + i/1000 + "s")
-      $('#horizontalDisplacement').html("Horizontal displacement: " + data_s_s[i].x + "m")
-      $('#verticalDisplacement').html("Vertical displacement: " + data_s_s[i].y + "m")
+      $('#horizontalDisplacement').html("Horizontal displacement: " + data[i].s_x + " m")
+      $('#verticalDisplacement').html("Vertical displacement: " + data[i].s_y + " m")
+      $('#horizontalVelocity').html("Horizontal velocity: " + data[i].v_x + " m/s")
+      $('#verticalVelocity').html("Vertical velocity: " + data[i].v_y + " m/s")
+      $('#resultantVelocity').html("Resultant velocity: " + data[i].v + " m/s")
+      $('#angle').html("Angle from horizontal: " + data[i].angle + " degrees")
+
       i++;
     }
   }
