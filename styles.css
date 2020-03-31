@@ -1,19 +1,1 @@
-#animation {
-  width: 1000px;
-  height:500px;
-}
 
-#canvasAnimation {
-  width: 1000px;
-  height:500px;
-}
-
-#projectile {
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 10px;
-  position: relative;
-  left:0px;
-  top:100px;
-}

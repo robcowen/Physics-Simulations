@@ -5,25 +5,21 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>
-  <div id="animation">
-    <div id="projectile">
-
+  <canvas id="canvasAnimation" width="1000" height="500"></canvas>
+  <div id="data">
+    <div id="time">
     </div>
-    <div id="data">
-      <div id="time">
-      </div>
-      <div id="horizontalDisplacement">
-      </div>
-      <div id="verticalDisplacement">
-      </div>
-      <div id="horizontalVelocity">
-      </div>
-      <div id="verticalVelocity">
-      </div>
-      <div id="resultantVelocity">
-      </div>
-      <div id="angle">
-      </div>
+    <div id="horizontalDisplacement">
+    </div>
+    <div id="verticalDisplacement">
+    </div>
+    <div id="horizontalVelocity">
+    </div>
+    <div id="verticalVelocity">
+    </div>
+    <div id="resultantVelocity">
+    </div>
+    <div id="angle">
     </div>
   </div>
   <canvas id="s_s_graph"></canvas>
@@ -155,31 +151,66 @@
   });
 
 $(document).ready(function(){
-  animation()
+  animate()
 })
 
+
 // Animation
-function animation() {
-  var elem = document.getElementById("projectile");
-  var x = 0;
-  var y = 0;
+var animationHeight = $('#canvasAnimation').height() - 20
+var animationWidth = $('#canvasAnimation').width() - 20
+
+var heightFactor = animationHeight / s_y_max
+var widthFactor = animationWidth / s_x_max
+
+// Arrow lengths
+var a_factor = 5
+var v_factor = 5
+
+
+
+function animate() {
+  var animation = setInterval(frame, t_increment/1000);
   var i = 0;
-  var id = setInterval(frame, t_increment/1000);
-
-  var animationHeight = $('#animation').height()
-  var animationWidth = $('#animation').width()
-
-  var heightFactor = animationHeight / s_y_max
-  var widthFactor = animationWidth / s_x_max
-
-  console.log(heightFactor)
 
   function frame() {
     if (i >= data.length) {
-      clearInterval(id);
-    } else {
-      elem.style.top = animationHeight - (data[i].s_y * heightFactor) + 'px';
-      elem.style.left = (data[i].s_x * widthFactor) + 'px';
+      clearInterval(animation);
+    }
+
+    else {
+      var canvas = document.getElementById('canvasAnimation')
+      var context = canvas.getContext('2d');
+      var radius = 10;
+      var centerX = (data[i].s_x * widthFactor) + radius * 2
+      var centerY = animationHeight - (data[i].s_y * heightFactor) + radius * 2
+
+      // Clear previous frame
+      context.clearRect(0, 0, canvas.width, canvas.height)
+
+      // Draw projectile
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'red';
+      context.fill();
+
+      // Draw arrows
+      // Acceleration
+      context.beginPath()
+      context.moveTo(centerX, centerY)
+      context.lineTo(centerX, centerY - a*a_factor)
+      context.lineWidth = 5;
+      context.strokeStyle = 'blue';
+      context.lineCap = 'round';
+      context.stroke()
+
+      // Velocity
+      context.beginPath()
+      context.moveTo(centerX, centerY)
+      context.lineTo(centerX + data[i].v_x * v_factor, centerY - data[i].v_y * v_factor)
+      context.lineWidth = 5;
+      context.strokeStyle = 'green';
+      context.lineCap = 'round';
+      context.stroke()
 
       $('#time').html("Time: " + i/1000 + "s")
       $('#horizontalDisplacement').html("Horizontal displacement: " + data[i].s_x + " m")
@@ -193,5 +224,7 @@ function animation() {
     }
   }
 }
+
+
 </script>
 </html>
