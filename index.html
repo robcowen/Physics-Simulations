@@ -156,8 +156,8 @@ $(document).ready(function(){
 
 
 // Animation
-const animationHeight = $('#canvasAnimation').height() - 100
-const animationWidth = $('#canvasAnimation').width() - 100
+const animationHeight = $('#canvasAnimation').height() - 150
+const animationWidth = $('#canvasAnimation').width() - 150
 
 const heightFactor = animationHeight / s_y_max
 const widthFactor = animationWidth / s_x_max
@@ -211,6 +211,42 @@ function animate() {
       context.strokeStyle = 'green';
       context.lineCap = 'round';
       context.stroke()
+
+      // Components
+      // x
+      context.beginPath()
+      context.moveTo(centerX, centerY)
+      context.lineTo(centerX + data[i].v_x * v_factor, centerY)
+      context.lineWidth = 2;
+      context.strokeStyle = 'green';
+      context.lineCap = 'round';
+      context.stroke()
+
+      // y
+      context.beginPath()
+      context.moveTo(centerX, centerY)
+      context.lineTo(centerX, centerY - data[i].v_y * v_factor)
+      context.lineWidth = 2;
+      context.strokeStyle = 'green';
+      context.lineCap = 'round';
+      context.stroke()
+
+      // Labels
+      context.font = '10pt Calibri';
+      context.fillStyle = 'blue';
+      context.fillText(a.toFixed(2)+' m/s^2', centerX + 10, centerY - a*a_factor);
+
+      context.font = '10pt Calibri';
+      context.fillStyle = 'green';
+      context.fillText(data[i].v.toFixed(2)+' m/s', centerX + data[i].v_x * v_factor + 10, centerY - data[i].v_y * v_factor);
+
+      context.font = 'italic 10pt Calibri';
+      context.fillStyle = 'green';
+      context.fillText(data[i].v_x.toFixed(2)+' m/s', centerX + data[i].v_x * v_factor + 10, centerY);
+
+      context.font = 'italic 10pt Calibri';
+      context.fillStyle = 'green';
+      context.fillText(data[i].v_y.toFixed(2)+' m/s', centerX + 10, centerY - data[i].v_y * v_factor);
 
       $('#time').html("Time: " + i/1000 + "s")
       $('#horizontalDisplacement').html("Horizontal displacement: " + data[i].s_x + " m")
